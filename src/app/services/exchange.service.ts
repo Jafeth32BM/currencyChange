@@ -1,45 +1,44 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { ExchangeRate, ExchangeResponse, RateEntry } from '../interfaces/exchangeResponse.interface';
-import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { map, tap } from 'rxjs';
-
-const RATES_KEY = 'exchangeRates';
-
+import { effect, Injectable, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Producto } from '../interfaces/product.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ExchangeService {
-  envs = environment;
-  private http = inject(HttpClient);
-  exchangeValue = signal<ExchangeResponse[]>([]);
-  allRates = signal<RateEntry[]>([]);
+  public productos = signal<Producto[]>([]);
+  private isBrowser: boolean;
 
-  constructor() {
-    console.log('Servicio Creado')
-  }
+  constructor(@Inject(PLATFORM_ID) platformId: any) {
+    this.isBrowser = isPlatformBrowser(platformId);
 
-  loadExchangeRates(date: string) {
-    this.http.get<ExchangeResponse>(`${this.envs.BASE_URL}/historical/${date}.json`, {
-      params: {
-        app_id: this.envs.APP_ID,
-        base: 'USD'
+    // Solo en el cliente, cargamos desde localStorage
+    if (this.isBrowser) {
+      const loadedProducts = this.loadFromLocalStorage();
+      this.productos.set(loadedProducts);
+    }
+
+    // El efecto solo guardará en el cliente
+    effect(() => {
+      if (this.isBrowser) {
+        try {
+          localStorage.setItem('productos', JSON.stringify(this.productos()));
+        } catch (error) {
+          console.error('Error saving to localStorage:', error);
+        }
       }
-    })
-    .pipe(
-      map(resp => {
-        const ratesObject = resp.rates;
-        const ratesArray = Object.entries(ratesObject);
-        const ratesMapped = ratesArray.map(([code, rate]) => ({
-          code: code,
-          rate: rate
-        }));
-        return ratesMapped
-      }),
-      tap(rates => {
-        this.allRates.set(rates);
-      })
-    )
-
+    });
   }
 
+  private loadFromLocalStorage(): Producto[] {
+    try {
+      const productos = localStorage.getItem('productos');
+      return productos ? JSON.parse(productos) : [];
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+      return [];
+    }
+  }
+
+  addNewProduct(newProduct: Producto) {
+    this.productos.update((list) => [...list, newProduct]);
+  }
 }

@@ -1,26 +1,31 @@
 <h2>Lista de Productos y Conversión</h2>
 
-<div class="mb-3">
+<div class="mt-3">
 
-  <!-- Párrafo arriba -->
+  @for (producto of productos(); track producto.id; let idx = $index) {
   <p class="mb-2">
-    Producto - $200.00 MXN
+    <strong>{{producto.name | titlecase}}</strong>  -  ${{producto.price_mxn}} {{selectCurrency()}}
   </p>
 
-  <!-- Contenedor responsable de los inputs -->
+  }
+  <hr>
+  <p class="mt-2
+  ">Total: {{total() | currency: selectCurrency()}} {{selectCurrency()}}</p>
   <div class="d-flex flex-column flex-md-row gap-2">
-
+    Cambiar moneda a:
     <!-- Input de fecha -->
-    <input type="date"
-           class="form-control form-control-sm w-100 w-md-auto">
+    <input type="date" class="form-control form-control-sm w-auto w-md-auto" [value]="date()"
+    [min]="minDate"
+    [max]="maxDate">
 
     <!-- Select de países -->
-    <select class="form-select form-select-sm w-100 w-md-auto">
-      <option value="MX">México (MXN)</option>
-      <option value="US">Estados Unidos (USD)</option>
-      <option value="ES">España (EUR)</option>
-      <option value="BR">Brasil (BRL)</option>
-      <option value="JP">Japón (JPY)</option>
+    <select class="form-select form-select-sm w-auto w-md-auto" [value]="selectCurrency()"
+      (change)="selectCurrency.set($any($event.target).value)">
+      <option value="MXN">México (MXN)</option>
+      <option value="USD">Estados Unidos (USD)</option>
+      <option value="EUR">España (EUR)</option>
+      <option value="BRL">Brasil (BRL)</option>
+      <option value="JPY">Japón (JPY)</option>
     </select>
 
   </div>

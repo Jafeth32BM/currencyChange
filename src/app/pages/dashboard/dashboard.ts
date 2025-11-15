@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ProductForm } from '../product-form/product-form.';
 import { ProductList } from '../product-list/product-list';
+import { ExchangeService } from '../../services/exchange.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,4 +9,6 @@ import { ProductList } from '../product-list/product-list';
   templateUrl: './dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class Dashboard { }
+export default class Dashboard {
+  public exchangeService = inject(ExchangeService);
+}
