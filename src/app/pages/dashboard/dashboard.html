@@ -1,9 +1,22 @@
-<div class="row">
-  <div class="col-12 col-sm-6">
-  <product-form (newProduct)="exchangeService.addNewProduct($event)"
-  [productos]="exchangeService.productos()"/>
-</div>
-<div class="col-12 col-sm-6">
-  <product-list [productos]="exchangeService.productos()"/>
+<!-- dashboard.html -->
+<div class="container-fluid">
+  <div class="row g-4">
+    <!-- Formulario para agregar productos -->
+    <div class="col-12 col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <product-form />
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de productos y conversión -->
+    <div class="col-12 col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <product-list />
+        </div>
+      </div>
+    </div>
   </div>
 </div>

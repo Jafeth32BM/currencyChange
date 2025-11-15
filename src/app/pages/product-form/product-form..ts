@@ -1,29 +1,29 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { Producto } from '../../interfaces/product.interface';
+// product-form.ts
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'product-form',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './product-form.html'
 })
 export class ProductForm {
-  producto = signal('');
-  precio = signal(0);
+  private productService = inject(ProductService);
 
-  newProduct = output<Producto>();
-  productos = input.required<Producto[]>()
+  productName = '';
+  productPrice = '';
 
   addProduct() {
-    if (!this.precio() || !this.precio() || this.precio() <= 0) { return }
-    const newProduct: Producto ={
-      id: crypto.randomUUID(),
-      name: this.producto(),
-      price_mxn: this.precio(),
-      date_added: Date.now() }
+    if (this.productName && this.productPrice) {
+      const price = parseInt(this.productPrice, 10);
+      if (!isNaN(price) && price > 0) {
+        this.productService.addProduct(this.productName, price);
 
-    this.newProduct.emit(newProduct);
-    console.log('Producto agregado:', newProduct)
-    this.producto.set('');
-    this.precio.set(0);
+        // Limpiar el formulario
+        this.productName = '';
+        this.productPrice = '';
+      }
+    }
   }
 }

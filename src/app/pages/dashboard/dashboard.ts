@@ -6,8 +6,7 @@ import { ExchangeService } from '../../services/exchange.service';
 @Component({
   selector: 'app-dashboard',
   imports: [ProductForm, ProductList],
-  templateUrl: './dashboard.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './dashboard.html'
 })
 export default class Dashboard {
   public exchangeService = inject(ExchangeService);

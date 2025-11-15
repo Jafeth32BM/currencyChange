@@ -1,18 +1,36 @@
-<h3>Agregar producto</h3>
-<input
-type="text"
-class="form-control mt-4 mb-2"
-placeholder="Producto"
-[value]="producto()"
-(input)="producto.set(txtProduct.value)"
-#txtProduct>
+<!-- product-form.html -->
+<div class="product-form-container">
+  <h3 class="h5 mb-4">Agregar Nuevo Producto</h3>
 
-<input
-type="number"
-class="form-control  mb-2"
-placeholder="Precio"
-[value]="precio()"
-(input)="precio.set(txtPrecio.valueAsNumber)"
-#txtPrecio>
+  <form (ngSubmit)="addProduct()" class="needs-validation" novalidate>
+    <div class="mb-3">
+      <label for="productName" class="form-label">Nombre del Producto</label>
+      <input type="text"
+             class="form-control"
+             id="productName"
+             placeholder="Ingresa el nombre del producto"
+             [(ngModel)]="productName"
+             name="productName"
+             required>
+    </div>
 
-<button class="btn btn-primary mt-2" (click)="addProduct()">Agregar</button>
+    <div class="mb-3">
+      <label for="productPrice" class="form-label">Precio en MXN</label>
+      <input type="number"
+             class="form-control"
+             id="productPrice"
+             placeholder="Ingresa el precio en MXN"
+             [(ngModel)]="productPrice"
+             name="productPrice"
+             min="1"
+             step="0.01"
+             required>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary w-100"
+            [disabled]="!productName || !productPrice">
+      Agregar Producto
+    </button>
+  </form>
+</div>
